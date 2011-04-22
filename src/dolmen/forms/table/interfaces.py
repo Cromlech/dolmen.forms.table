@@ -1,9 +1,8 @@
+# -*- coding: utf-8 -*-
 
 from zope import interface
-
-from zeam.form.base.interfaces import IFormCanvas, IForm
-from zeam.form.base.interfaces import IZeamFormBaseAPI
-from zeam.form.composed.interfaces import ISubForm
+from dolmen.forms.base.interfaces import IFormCanvas, IForm
+from dolmen.forms.composed.interfaces import ISubForm
 
 
 class ITableFormCanvas(IFormCanvas):
@@ -30,15 +29,3 @@ class ITableForm(IForm, ITableFormCanvas):
 class ISubTableForm(ISubForm, ITableFormCanvas):
     """A table form that can be used in a composed form.
     """
-
-
-class IZeamFormTableAPI(IZeamFormBaseAPI):
-    """Public API of zeam.form.table
-    """
-
-    TableForm = interface.Attribute(
-        u"A form able to work on more on more than one item at a time")
-    SubTableForm = interface.Attribute(
-        u"A table form that can be used in a composed form")
-    TableActions = interface.Attribute(
-        u"Action being executed on more than one content at a time")

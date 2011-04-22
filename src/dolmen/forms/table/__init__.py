@@ -1,7 +1,4 @@
+# -*- coding: utf-8 -*-
 
-from zeam.form.base import *
-from zeam.form.table.actions import TableActions
-from zeam.form.table.form import TableForm, SubTableForm
-
-from zeam.form.table.interfaces import IZeamFormTableAPI
-__all__ = list(IZeamFormTableAPI)
+from dolmen.forms.table.actions import TableActions
+from dolmen.forms.table.form import TableForm, SubTableForm

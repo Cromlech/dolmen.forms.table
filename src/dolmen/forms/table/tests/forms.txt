@@ -1,5 +1,14 @@
-zeam.form.table
-===============
+dolmen.forms.table
+==================
+
+Test initialization
+-------------------
+
+  >>> from dolmen.forms.base import testing
+  >>> testing.grok('dolmen.forms.table')
+
+Lines
+-----
 
 A table form can work on more than one item. For this we need an
 object which have values. A dictionnary is a good example:
@@ -14,14 +23,14 @@ object which have values. A dictionnary is a good example:
   ...    'Arthur': Person('Arthur', 24),
   ...    'Merlin': Person('Merlin', 203412)}
 
-  >>> from zeam.form.table import TableForm
-  >>> from zope.publisher.browser import TestRequest
+  >>> from dolmen.forms.table import TableForm
+  >>> from cromlech.io.testing import TestRequest
   >>> from zope.interface.verify import verifyObject
 
   >>> request = TestRequest()
   >>> form = TableForm(content, request)
 
-  >>> from zeam.form.table.interfaces import ITableForm
+  >>> from dolmen.forms.table.interfaces import ITableForm
   >>> verifyObject(ITableForm, form)
   True
 

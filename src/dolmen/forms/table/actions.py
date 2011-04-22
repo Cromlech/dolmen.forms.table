@@ -1,14 +1,12 @@
+# -*- coding: utf-8 -*-
 
-from zeam.form.base.markers import NO_VALUE, SUCCESS, FAILURE, NOTHING_DONE
-from zeam.form.base.actions import Actions
-from zeam.form.base.errors import Error
-from zeam.form.base.interfaces import IWidgetExtractor, ActionError
-from zeam.form.table import interfaces
-
-from zope import component
-from zope.i18nmessageid import MessageFactory
-
-_ = MessageFactory('zeam.form.base')
+from dolmen.forms.base import _
+from dolmen.forms.base.markers import NO_VALUE, SUCCESS, FAILURE, NOTHING_DONE
+from dolmen.forms.base.actions import Actions
+from dolmen.forms.base.errors import Error
+from dolmen.forms.base.interfaces import IWidgetExtractor, ActionError
+from dolmen.forms.table import interfaces
+from zope.component import getMultiAdapter
 
 
 class TableActions(Actions):
@@ -21,7 +19,7 @@ class TableActions(Actions):
         ready = False
 
         for action in self:
-            extractor = component.getMultiAdapter(
+            extractor = getMultiAdapter(
                 (action, form, request), IWidgetExtractor)
             value, error = extractor.extract()
             if value is not NO_VALUE:

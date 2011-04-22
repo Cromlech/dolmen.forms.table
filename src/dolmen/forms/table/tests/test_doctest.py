@@ -1,23 +1,17 @@
+# -*- coding: utf-8 -*-
 
 import unittest
+import doctest
 
-from zope.testing import doctest
-
-from zeam.form.table.testing import FunctionalLayer, setUp, tearDown
 
 def test_suite():
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
-    globs= {}
+    globs = {}
 
     suite = unittest.TestSuite()
     for filename in ['forms.txt',]:
         test = doctest.DocFileSuite(
-            filename,
-            optionflags=optionflags,
-            setUp=setUp,
-            tearDown=tearDown,
-            globs=globs)
-        test.layer = FunctionalLayer
+            filename, optionflags=optionflags, globs=globs)
         suite.addTest(test)
 
     return suite
