@@ -26,12 +26,13 @@ class TableFormCanvas(FormCanvas):
     tableFields = Fields()
     tableActions = TableActions()
     emptyDescription = _(u"There are no items.")
+    action_url = "."
 
     def __init__(self, context, request):
         super(TableFormCanvas, self).__init__(context, request)
         self.lines = []
         self.lineWidgets = []
-
+ 
     def updateLines(self, mark_selected=False):
         self.lines = []
         self.lineWidgets = []

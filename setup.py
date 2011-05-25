@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 
 name = 'dolmen.forms.table'
-version = '2.0a1dev'
+version = '2.0a1'
 readme = open(join('src', 'dolmen', 'forms', 'table', 'README.txt')).read()
 history = open(join('docs', 'HISTORY.txt')).read()
 
@@ -20,6 +20,8 @@ install_requires = [
     ]
 
 tests_require = [
+    'dolmen.location',
+    'cromlech.browser [test]',
     ]
 
 setup(name=name,
