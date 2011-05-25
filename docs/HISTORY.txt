@@ -1,13 +1,7 @@
 Changelog
 =========
 
-1.0b2 (unreleased)
+2.0a1 (2011-05-25)
 ------------------
 
-* ...
-
-1.0b1 (2010/10/27)
-------------------
-
-* Initial *proof of concept* release.
-
+- Forking from `zeam.form.table`. Using now the `Cromlech` framework.
