@@ -88,12 +88,20 @@ class TableForm(TableFormCanvas, StandaloneForm):
     baseclass()
     implements(interfaces.ITableForm)
 
+    def update(self, *args, **kwargs):
+        TableFormCanvas.update(self, *args, **kwargs)
+        StandaloneForm.update(self, *args, **kwargs)
+
 
 class SubTableForm(SubFormBase, TableFormCanvas):
     """A table form which can be used in a composed form.
     """
     baseclass()
     implements(interfaces.ISubTableForm)
+
+    def update(self, *args, **kwargs):
+        SubFormBase.update(self, *args, **kwargs)
+        TableFormCanvas.update(self, *args, **kwargs)
 
 
 @implementer(ITemplate)
