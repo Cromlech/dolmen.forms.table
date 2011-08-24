@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0a2 (2011-08-24)
+------------------
+
+- Corrected missing canonical update call on the form components.
+
+
 2.0a1 (2011-05-25)
 ------------------
 
