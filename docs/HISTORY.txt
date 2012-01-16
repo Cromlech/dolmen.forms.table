@@ -1,6 +1,15 @@
 Changelog
 =========
 
+2.0a3 (2012-01-17)
+------------------
+
+- Added base component `BaseTable` that has no action. This can be used as
+  a simple listing UI component, without any interaction.
+
+- Updated the components to the newest `dolmen.view` API.
+
+
 2.0a2 (2011-08-24)
 ------------------
 
