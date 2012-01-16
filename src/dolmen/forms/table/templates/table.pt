@@ -1,0 +1,17 @@
+<div class="table-info">
+  <tal:title content="structure table.title" />
+  <table tal:condition="lines"
+	 tal:attributes="id table.css_id; class table.css_class">
+    <thead>
+      <tr>
+	<th tal:repeat="field fields" tal:content="field.title" />
+      </tr>
+    </thead>
+    <tbody>
+      <tr tal:repeat="line lines">
+	<td tal:repeat="widget line"
+	    tal:content="structure widget.render()" />
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,38 @@
+<form action="." 
+      method="post"
+      enctype="multipart/form-data"
+      tal:attributes="action view.action_url; id view.htmlId()">
+
+  <h1 tal:condition="view.label"
+      tal:content="view.label">Label</h1>
+
+  <p tal:condition="view.description"
+     tal:content="view.description">Description</p>
+
+  <p class="form-status"
+     tal:condition="view.status"
+     tal:content="view.status">Status</p>
+
+  <div class="form-error"
+       tal:condition="view.errors">
+    <ul tal:condition="view.formErrors"
+	tal:repeat="error view.formErrors">
+      <li> <span tal:replace="error.title" /> </li>
+    </ul>
+  </div>
+
+  <table tal:condition="lines"
+	 tal:attributes="id table.css_id; class table.css_class">
+    <thead>
+      <tr>
+	<th tal:repeat="field fields" tal:content="field.title" />
+      </tr>
+    </thead>
+    <tbody>
+      <tr tal:repeat="line lines">
+	<td tal:repeat="widget line"
+	    tal:content="structure widget.render()" />
+      </tr>
+    </tbody>
+  </table>
+</form>

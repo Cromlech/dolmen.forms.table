@@ -5,11 +5,13 @@ from setuptools import setup, find_packages
 
 
 name = 'dolmen.forms.table'
-version = '2.0a2'
+version = '2.0a3-dev'
 readme = open(join('src', 'dolmen', 'forms', 'table', 'README.txt')).read()
 history = open(join('docs', 'HISTORY.txt')).read()
 
 install_requires = [
+    'cromlech.i18n',
+    'dolmen.batch',
     'dolmen.forms.base',
     'dolmen.forms.composed',
     'dolmen.template',
