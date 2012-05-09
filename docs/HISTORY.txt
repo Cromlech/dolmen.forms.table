@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2.1 (2012-05-09)
+----------------
+
+- The package now uses the latest changes from `cromlech.browser`.
+  The API is unchanged, but the versions are now pinned to a certain
+  point. Please check your versions before updating.
+
+
 2.0 (2012-01-17)
 ----------------
 

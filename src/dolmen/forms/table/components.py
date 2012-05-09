@@ -117,8 +117,9 @@ class BaseTable(FormData):
 
     def render(self, *args, **kwargs):
         html = HTMLWrapper()
-        res = self.template.render(self, target_language=self.target_language)
-        return html.render(content=res.encode('utf-8'))
+        res = self.template.render(
+            self, target_language=self.target_language, **self.namespace())
+        return html(res.encode('utf-8'))
 
 
 class TableFormCanvas(BaseTable):

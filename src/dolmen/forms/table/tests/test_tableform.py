@@ -4,8 +4,8 @@
 
 import grokcore.component as grok
 
-from cromlech.browser.testing import TestHTTPRequest
-from cromlech.io import IPublicationRoot
+from cromlech.browser.testing import TestRequest
+from cromlech.browser import IPublicationRoot
 from dolmen.forms.base.fields import Field, Fields
 from dolmen.forms.table import TableForm
 from dolmen.forms.table.interfaces import ITableForm
@@ -56,7 +56,7 @@ def test_table_form():
     """Base tests : values and behavior.
     FIXME : this needs more tests.
     """
-    request = TestHTTPRequest()
+    request = TestRequest()
     form = TableForm(content, request)
 
     assert verifyObject(ITableForm, form)
@@ -83,7 +83,7 @@ def test_batching():
     We simply need to make sure we have plugged it correctly and that
     it gets the right values out of the form.
     """
-    request = TestHTTPRequest()
+    request = TestRequest()
     form = TableForm(content, request)
 
     # The table can generate a batch out-of-the-box.
@@ -107,7 +107,7 @@ def test_widgets():
     We need to test that.
     FIXME: this needs real thorough tests.
     """
-    request = TestHTTPRequest()
+    request = TestRequest()
     form = AdvancedForm(content, request)
     form.update()
     form.updateForm()

@@ -5,28 +5,27 @@ from setuptools import setup, find_packages
 
 
 name = 'dolmen.forms.table'
-version = '2.0'
+version = '2.1'
 readme = open(join('src', 'dolmen', 'forms', 'table', 'README.txt')).read()
 history = open(join('docs', 'HISTORY.txt')).read()
 
 install_requires = [
+    'cromlech.browser >= 0.5',
     'cromlech.i18n',
-    'dolmen.batch',
-    'dolmen.forms.base >= 2.0',
+    'dolmen.batch >= 0.2',
+    'dolmen.forms.base >= 2.4',
     'dolmen.forms.composed',
     'dolmen.template',
     'grokcore.component',
     'setuptools',
     'zope.component',
     'zope.interface',
-    'cromlech.browser',
     'zope.location',
     ]
 
 tests_require = [
-    'cromlech.browser [test] >= 0.4',
-    'cromlech.io [test]',
-    'dolmen.location',
+    'cromlech.browser [test]',
+    'dolmen.location >= 0.2',
     'zope.testing',
     ]
 
