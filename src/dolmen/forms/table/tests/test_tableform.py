@@ -3,6 +3,7 @@
 # -*- coding: utf-8 -*-
 
 import grokcore.component as grok
+import xml.etree.ElementTree as etree
 
 from cromlech.browser.testing import TestHTTPRequest
 from cromlech.io import IPublicationRoot
@@ -58,6 +59,7 @@ def test_table_form():
     """
     request = TestHTTPRequest()
     form = TableForm(content, request)
+    form.fields = Fields(*fields.values())
 
     assert verifyObject(ITableForm, form)
 
@@ -73,9 +75,16 @@ def test_table_form():
     assert len(form.lines) == len(form.lineWidgets) == 3
     assert [line.prefix for line in form.lines] == [
         'form.line-0', 'form.line-1', 'form.line-2']
+    html = form.render()
 
-    # The result should contain HTML bas tags
-    assert '<html>' in form.render()
+    # The result should contain HTML base tags
+    assert '<html>' in html
+
+    etree.fromstring(html)
+
+    # table headers
+    assert [elt.text for elt in x.findall('.//table/thead//th')] == [
+            'age', 'name']
 
 
 def test_batching():
