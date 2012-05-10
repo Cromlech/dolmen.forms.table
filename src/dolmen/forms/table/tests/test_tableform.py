@@ -80,10 +80,10 @@ def test_table_form():
     # The result should contain HTML base tags
     assert '<html>' in html
 
-    etree.fromstring(html)
+    html = etree.fromstring(html)
 
     # table headers
-    assert [elt.text for elt in x.findall('.//table/thead//th')] == [
+    assert [elt.text for elt in html.findall('.//table/thead//th')] == [
             'age', 'name']
 
 
