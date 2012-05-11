@@ -7,7 +7,7 @@ import xml.etree.ElementTree as etree
 
 from cromlech.browser.testing import TestHTTPRequest
 from cromlech.io import IPublicationRoot
-from dolmen.forms.base.fields import Field, Fields
+from dolmen.forms.base import Field, Fields, Actions, Action
 from dolmen.forms.table import TableForm
 from dolmen.forms.table.interfaces import ITableForm
 from zope.interface import directlyProvides
@@ -59,7 +59,8 @@ def test_table_form():
     """
     request = TestHTTPRequest()
     form = TableForm(content, request)
-    form.fields = Fields(*fields.values())
+    form.tableFields = Fields(*fields.values())
+    form.actions = Actions(Action(u'Do not use'))
 
     assert verifyObject(ITableForm, form)
 
@@ -84,7 +85,7 @@ def test_table_form():
 
     # table headers
     assert [elt.text for elt in html.findall('.//table/thead//th')] == [
-            'age', 'name']
+            None, 'age', 'name']
 
 
 def test_batching():
@@ -107,6 +108,7 @@ def test_batching():
     # Now, we can test it:
     form.batchSize = 1
     form.update()
+    form.updateForm()
     assert form.batcher.size == 1
     assert form.batcher.url == 'http://localhost'
 

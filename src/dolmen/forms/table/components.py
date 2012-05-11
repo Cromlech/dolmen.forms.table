@@ -13,7 +13,7 @@ from dolmen.batch import Batcher
 from dolmen.template import TALTemplate
 from dolmen.forms.base import DISPLAY, _
 from dolmen.forms.base import Fields, Actions, Widgets
-from dolmen.forms.base import FormData, FormCanvas, cloneFormData
+from dolmen.forms.base import FormData, cloneFormData, SUCCESS
 from dolmen.forms.base.widgets import getWidgetExtractor
 from dolmen.forms.base.components import StandaloneForm
 from dolmen.forms.composed.form import SubFormBase
@@ -62,8 +62,7 @@ class BaseTable(FormData):
 
     @property
     def title(self):
-        return u"<h1>%s</h1>" % (
-            getattr(self.context, 'title', None) or self.context.__name__)
+        return (u"<h1>%s</h1>" % self.label) or ''
 
     def getItems(self):
         return self.context.values()
@@ -77,8 +76,9 @@ class BaseTable(FormData):
     def namespace(self):
         namespace = {}
         namespace['view'] = namespace['table'] = self
+        namespace['table_fields'] = self.tableFields
         namespace['lines'] = self.lineWidgets
-        namespace['fields'] = self.fields
+        namespace['fields'] = self.fieldWidgets
         return namespace
 
     def updateLines(self):
@@ -101,18 +101,24 @@ class BaseTable(FormData):
         self.fieldWidgets.update()
 
     def update(self, *args, **kwargs):
+        pass
+
+    def update_batch(self):
+        if self.createBatch:
+            content = self.getContentData().getContent()
+            if not ILocation.providedBy(content):
+                content = LocationProxy(content)
+                content.__parent__ = self
+                content.__name__ = ''
+            self.batcher = Batcher(
+                content, self.request, self.prefix, size=self.batchSize)
+            self.batcher.update(self.lines)
+
+    def updateForm(self, *args, **kwargs):
         if self._updated is False:
             self.updateLines()
             self.updateWidgets()
-            if self.createBatch:
-                content = self.getContentData().getContent()
-                if not ILocation.providedBy(content):
-                    content = LocationProxy(content)
-                    content.__parent__ = self
-                    content.__name__ = ''
-                self.batcher = Batcher(
-                    content, self.request, self.prefix, size=self.batchSize)
-                self.batcher.update(self.lines)
+            self.update_batch()
             self._updated = True
 
     def render(self, *args, **kwargs):
@@ -150,27 +156,46 @@ class TableFormCanvas(BaseTable):
             operator.or_,
             [False] + map(operator.attrgetter('required'), self.fields))
 
+    def mark_selected(self, line):
+        # Mark selected lines
+        selectedExtractor = getWidgetExtractor(
+            line.selectedField, line, self.request)
+        if selectedExtractor is not None:
+            value, error = selectedExtractor.extract()
+            if value:
+                line.selected = True
+
+    def generate_line_form(self, content, prefix):
+        """
+        Generate form for a specific line, using content.
+        """
+        form = cloneFormData(self, content=content, prefix=prefix)
+        # TODO : if cloneFormData would copy dataManager and dataValidators
+        # this would not happen, fix it in forms.base!
+        form.dataManager = self.dataManager
+        form.dataValidators = self.dataValidators
+        form.setContentData(content)
+        # context is content so that vocabularies work !
+        form.context = content
+        form.__parent__ = self
+        return form
+
     def updateLines(self, mark_selected=False):
         self.lines = []
         self.lineWidgets = []
         self.batching = None
         items = self.getItems()
         for position, item in enumerate(items):
+            # each line is like a form
             prefix = '%s.line-%d' % (self.prefix, position)
-            form = cloneFormData(self, content=item, prefix=prefix)
+            form = self.generate_line_form(content=item, prefix=prefix)
             form.selected = False
 
             # Checkbox to select the line
             form.selectedField = self.createSelectedField(item)
 
             if mark_selected:
-                # Mark selected lines
-                selectedExtractor = getWidgetExtractor(
-                    form.selectedField, form, self.request)
-                if selectedExtractor is not None:
-                    value, error = selectedExtractor.extract()
-                    if value:
-                        form.selected = True
+                self.mark_selected(form)
 
             lineWidget = Widgets(form=form, request=self.request)
             lineWidget.extend(form.selectedField)
@@ -178,13 +203,12 @@ class TableFormCanvas(BaseTable):
             self.lineWidgets.append(lineWidget)
 
     def updateActions(self):
-        form, action, status = self.tableActions.process(self, self.request)
+        action, result = self.tableActions.process(self, self.request)
         if action is None:
-            form, action, status = self.actions.process(self, self.request)
-        return form, action, status
+            action, result = self.actions.process(self, self.request)
+        return action, result
 
     def updateWidgets(self):
-        self.updateLines()
         for widgets in self.lineWidgets:
             widgets.extend(self.tableFields)
         self.fieldWidgets.extend(self.fields)
@@ -195,6 +219,18 @@ class TableFormCanvas(BaseTable):
             widgets.update()
         self.fieldWidgets.update()
         self.actionWidgets.update()
+
+    def updateForm(self, *args, **kwargs):
+        if self._updated is False:
+            self.updateLines()
+            action, result = self.updateActions()
+            if action and result is SUCCESS:
+                self.ignoreRequest = True  # line number may have changed !
+                # refresh lines
+                self.updateLines()
+            self.updateWidgets()
+            self.update_batch()
+            self._updated = True
 
     def getItems(self):
         return self.context.values()
