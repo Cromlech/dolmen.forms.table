@@ -69,7 +69,7 @@ class TableActions(Actions):
 
                 if not one_selected:
                     form.errors.append(
-                        Error(_(u"You didn't select any item!"), None))
+                        Error(_(u"You didn't select any item!"), form.prefix))
                     got_error = True
 
                 if got_error:
