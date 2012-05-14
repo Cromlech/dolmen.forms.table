@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 
 name = 'dolmen.forms.table'
-version = '2.0'
+version = '2.0-dev'
 readme = open(join('src', 'dolmen', 'forms', 'table', 'README.txt')).read()
 history = open(join('docs', 'HISTORY.txt')).read()
 

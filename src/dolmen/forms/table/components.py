@@ -30,7 +30,7 @@ def get_template(filename):
 
 
 class BaseTable(FormData):
-    """Action-less table component.
+    """Action-less table component (mainly for display)
     """
     mode = DISPLAY
     fields = Fields()
@@ -45,6 +45,8 @@ class BaseTable(FormData):
     batchSize = 10
     createBatch = False
 
+    tableFields = Fields()
+
     ignoreContent = False
     ignoreRequest = True
     _updated = False
@@ -55,6 +57,13 @@ class BaseTable(FormData):
         self.lines = []
         self.lineWidgets = []
         self.batcher = None
+
+    @property
+    def tableDataManager(self):
+        """By default tableDataManager is dataManager
+
+        but you may override it"""
+        return self.dataManager
 
     @property
     def target_language(self):
@@ -81,19 +90,36 @@ class BaseTable(FormData):
         namespace['fields'] = self.fieldWidgets
         return namespace
 
+    def generate_line_form(self, content, prefix):
+        """
+        Generate form for a specific line, using content.
+        """
+        form = cloneFormData(self, content=content, prefix=prefix)
+        # TODO : if cloneFormData would copy dataValidators
+        # and accept kwargs to override eg. dataManager
+        # this would not happen, fix it in forms.base!
+        form.dataManager = self.tableDataManager
+        form.dataValidators = self.dataValidators
+        form.setContentData(content)
+        # context is content so that vocabularies work !
+        form.context = content
+        form.__parent__ = self
+        return form
+
     def updateLines(self):
         self.lines = []
         self.lineWidgets = []
         for position, item in enumerate(self.items()):
             prefix = u'%s.line-%d' % (self.prefix, position)
-            form = cloneFormData(self, content=item, prefix=prefix)
+            form = self.generate_line_form(content=item, prefix=prefix)
             lineWidget = Widgets(form=form, request=self.request)
             self.lines.append(form)
             self.lineWidgets.append(lineWidget)
 
     def updateWidgets(self):
         for widgets in self.lineWidgets:
-            widgets.extend(self.fields)
+            widgets.extend(self.tableFields)
+        self.fieldWidgets.extend(self.fields)
 
         for widgets in self.lineWidgets:
             widgets.update()
@@ -136,16 +162,10 @@ class TableFormCanvas(BaseTable):
     action_url = ""
 
     actions = Actions()
-    tableFields = Fields()
     tableActions = TableActions()
     emptyDescription = _(u"There are no items.")
 
-    @property
-    def tableDataManager(self):
-        """By default tableDataManager is dataManager
-
-        but you may override it"""
-        return self.dataManager
+    ignoreRequest = True
 
     def __init__(self, context, request):
         super(TableFormCanvas, self).__init__(context, request)
@@ -172,22 +192,6 @@ class TableFormCanvas(BaseTable):
             if value:
                 line.selected = True
 
-    def generate_line_form(self, content, prefix):
-        """
-        Generate form for a specific line, using content.
-        """
-        form = cloneFormData(self, content=content, prefix=prefix)
-        # TODO : if cloneFormData would copy dataValidators
-        # and accept kwargs to override eg. dataManager
-        # this would not happen, fix it in forms.base!
-        form.dataManager = self.tableDataManager
-        form.dataValidators = self.dataValidators
-        form.setContentData(content)
-        # context is content so that vocabularies work !
-        form.context = content
-        form.__parent__ = self
-        return form
-
     def updateLines(self, mark_selected=False):
         self.lines = []
         self.lineWidgets = []
@@ -198,13 +202,10 @@ class TableFormCanvas(BaseTable):
             prefix = '%s.line-%d' % (self.prefix, position)
             form = self.generate_line_form(content=item, prefix=prefix)
             form.selected = False
-
             # Checkbox to select the line
             form.selectedField = self.createSelectedField(item)
-
             if mark_selected:
                 self.mark_selected(form)
-
             lineWidget = Widgets(form=form, request=self.request)
             lineWidget.extend(form.selectedField)
             self.lines.append(form)
@@ -217,15 +218,9 @@ class TableFormCanvas(BaseTable):
         return action, result
 
     def updateWidgets(self):
-        for widgets in self.lineWidgets:
-            widgets.extend(self.tableFields)
-        self.fieldWidgets.extend(self.fields)
+        super(TableFormCanvas, self).updateWidgets()
         self.actionWidgets.extend(self.tableActions)
         self.actionWidgets.extend(self.actions)
-
-        for widgets in self.lineWidgets:
-            widgets.update()
-        self.fieldWidgets.update()
         self.actionWidgets.update()
 
     def updateForm(self, *args, **kwargs):
