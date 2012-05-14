@@ -16,8 +16,9 @@ actions of the collection will receive each selected row
 as an individual form to process.
 
 
-For table actions, the datamanager will get be invoked with the content
+For table actions, the tableDataManager will get be invoked with the content
 of each lines (+ global fields).
+By default tableDataManager is dataManager but you may override it.
 
 By default generate_line_form cloneFormData but you can change this behaviour,
 for example to provide a specific interface.

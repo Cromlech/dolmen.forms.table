@@ -33,6 +33,15 @@ def merge_errors(line, form):
         line.errors.append(Error(' ', 'select'))
 
 
+def extract_all_data(form):
+    parent = form.parent
+    data, errors =  form.extractData(parent.tableFields)
+    data_, errors_ = parent.extractData(parent.fields)
+    data.update(data_)
+    errors.extend(errors_)
+    return data, errors
+
+
 class TableActions(Actions):
     """Actions that can be applied on a table.
 
@@ -64,6 +73,8 @@ class TableActions(Actions):
                         got_error |=  not action.validate(line)
                     except ActionError, e:
                         got_error = True
+                        line.errors.append(
+                            Error(unicode(e), identifier=line.prefix))
                     if line.errors:
                         merge_errors(line, form)
 

@@ -140,6 +140,13 @@ class TableFormCanvas(BaseTable):
     tableActions = TableActions()
     emptyDescription = _(u"There are no items.")
 
+    @property
+    def tableDataManager(self):
+        """By default tableDataManager is dataManager
+
+        but you may override it"""
+        return self.dataManager
+
     def __init__(self, context, request):
         super(TableFormCanvas, self).__init__(context, request)
         self.lines = []
@@ -170,9 +177,10 @@ class TableFormCanvas(BaseTable):
         Generate form for a specific line, using content.
         """
         form = cloneFormData(self, content=content, prefix=prefix)
-        # TODO : if cloneFormData would copy dataManager and dataValidators
+        # TODO : if cloneFormData would copy dataValidators
+        # and accept kwargs to override eg. dataManager
         # this would not happen, fix it in forms.base!
-        form.dataManager = self.dataManager
+        form.dataManager = self.tableDataManager
         form.dataValidators = self.dataValidators
         form.setContentData(content)
         # context is content so that vocabularies work !
