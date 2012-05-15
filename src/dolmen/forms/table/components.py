@@ -51,6 +51,8 @@ class BaseTable(FormData):
     ignoreRequest = True
     _updated = False
 
+    emptyDescription = _(u"There are no items.")
+
     def __init__(self, context, request):
         super(BaseTable, self).__init__(context, request)
         self.fieldWidgets = Widgets(form=self, request=self.request)
@@ -163,7 +165,6 @@ class TableFormCanvas(BaseTable):
 
     actions = Actions()
     tableActions = TableActions()
-    emptyDescription = _(u"There are no items.")
 
     ignoreRequest = True
 
