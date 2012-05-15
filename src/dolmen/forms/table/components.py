@@ -95,7 +95,7 @@ class BaseTable(FormData):
         Generate form for a specific line, using content.
         """
         form = cloneFormData(self, content=content, prefix=prefix)
-        # TODO : if cloneFormData would copy dataValidators
+        # TODO : if cloneFormData would copy dataValidators
         # and accept kwargs to override eg. dataManager
         # this would not happen, fix it in forms.base!
         form.dataManager = self.tableDataManager
@@ -228,7 +228,7 @@ class TableFormCanvas(BaseTable):
             self.updateLines()
             action, result = self.updateActions()
             if action and result is SUCCESS:
-                self.ignoreRequest = True  # line number may have changed !
+                self.ignoreRequest = True  # line number may have changed !
                 # refresh lines
                 self.updateLines()
             self.updateWidgets()
