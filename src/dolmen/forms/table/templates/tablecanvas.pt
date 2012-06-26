@@ -1,6 +1,7 @@
 <form action="." 
       method="post"
       enctype="multipart/form-data"
+      i18n:domain="dolmen.forms.table"
       tal:attributes="action view.action_url;
                       id view.htmlId();
                       method view.formMethod;
@@ -21,7 +22,7 @@
        tal:condition="view.errors">
     <ul tal:condition="view.formErrors"
         tal:repeat="error view.formErrors">
-      <li> <span tal:replace="error.title" /> </li>
+      <li><span tal:replace="error.title" /></li>
     </ul>
   </div>
 
@@ -51,6 +52,7 @@
       </tr>
       <tr class="odd" tal:condition="not lines">
         <td colspan="#"
+	    i18n:translate=""
             tal:attributes="colspan columns"
             tal:content="view.emptyDescription">
           There are no items.
@@ -84,28 +86,20 @@
               </tal:description>
               <tal:error tal:define="error widget.error"
                          tal:condition="error">
-                <span class="field-error"
-                      tal:content="error.title">
-                  Error
-                </span>
+                <span class="field-error" tal:content="error.title" />
                 <br />
               </tal:error>
               <tal:widget tal:content="structure widget.render()" />
             </div>
           </div>
-
           <div class="actions"
                tal:condition="view.actionWidgets">
             <div class="action" tal:repeat="widget view.actionWidgets">
               <tal:widget tal:content="structure widget.render()" />
             </div>
           </div>
-
         </td>
       </tr>
     </tfoot>
   </table>
-
-
-
 </form>

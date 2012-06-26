@@ -1,5 +1,4 @@
-<div class="table-info">
-
+<div class="table-info" i18n:domain="dolmen.forms.table">
   <table tal:attributes="id table.css_id; class table.css_class"
          tal:define="columns len(view.tableFields)">
     <thead>
@@ -15,6 +14,7 @@
       </tr>
       <tr class="odd" tal:condition="not lines">
         <td colspan="#"
+	    i18n:translate=""
             tal:attributes="colspan columns"
             tal:content="view.emptyDescription">
           There are no items.
