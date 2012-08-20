@@ -31,12 +31,14 @@
     <thead>
       <tr>
         <th/>
-        <th tal:repeat="field table_fields" tal:content="field.title" />
+        <th tal:repeat="field table_fields" tal:content="field.title"
+            tal:attributes="class 'field_%s' % field.identifier"/>
       </tr>
     </thead>
     <tbody>
       <tr tal:repeat="line lines">
-        <td tal:repeat="widget line">
+        <td tal:repeat="widget line"
+            tal:attributes="class 'field_%s' % widget.component.identifier">
           <div tal:define="error widget.error"
                tal:omit-tag="not:error"
                class="error-field">

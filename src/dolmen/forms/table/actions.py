@@ -94,8 +94,9 @@ class TableActions(Actions):
                         status = action(line)
                         got_error |= status != SUCCESS
                     except ActionError, e:
-                        form.errors.append(Error(e.args[0], line.prefix))
                         got_error = True
+                        line.errors.append(
+                            Error(unicode(e), identifier=line.prefix))
                     if line.errors:
                         merge_errors(line, form)
                 return action, SUCCESS if not got_error else FAILURE

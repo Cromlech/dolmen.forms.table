@@ -104,7 +104,11 @@ class BaseTable(FormData):
         form.dataValidators = self.dataValidators
         form.setContentData(content)
         # context is content so that vocabularies work !
+        if not ILocation.providedBy(content):
+            content = LocationProxy(content)
         form.context = content
+        if getattr(content, '__parent__', None) is None:
+            setattr(content, '__parent__', form)
         form.__parent__ = self
         return form
 
