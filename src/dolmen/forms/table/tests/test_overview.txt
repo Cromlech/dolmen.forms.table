@@ -1,0 +1,36 @@
+Overview
+=========
+
+tableFields are the fields composing the lines of the form.
+
+fields are fields that will appear under the table.
+You can use it either
+in conjunction with a global action to eg. filter rows
+or to complete data in row. Each row will be combined with fields values.
+
+There are actions and tableActions.
+Both can be used.
+Actions is for the normal Actions list which will get the global form.
+While if tableActions is a TableActions
+actions of the collection will receive each selected row
+as an individual form to process.
+
+
+For table actions, the tableDataManager will get be invoked with the content
+of each lines (+ global fields).
+By default tableDataManager is dataManager but you may override it.
+
+By default generate_line_form cloneFormData but you can change this behaviour,
+for example to provide a specific interface.
+
+.. TODO::
+   make it a doctest
+.. TODO::
+   explain how line form get content as context
+.. TODO::
+   explain how line global errors are merged
+.. TODO::
+   explain that lines are regenerated after action processing upon success
+   but not on failure. Explain also that ignoreRequest is set to True, upon
+   success not to mix up lines.
+

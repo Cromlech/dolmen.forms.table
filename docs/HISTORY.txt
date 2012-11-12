@@ -1,6 +1,24 @@
 Changelog
 =========
 
+2.2 (2012-11-12)
+----------------
+
+- *major* : 
+
+  - line context is line content, not form
+  - handle validators in dataManager
+  - updateForm is after update, like for normal forms
+  - action get a single arg like classic actions
+  - handler validate then run actions
+  - bubble up line errors
+
+- added tableDataManager + extract_all_data helper method
+- added errors and actions display in template
+- lot of small fixes
+- css class on each line for fields
+- added translations
+
 2.1 (2012-05-09)
 ----------------
 

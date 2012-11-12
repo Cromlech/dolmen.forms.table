@@ -1,16 +1,24 @@
-<div class="table-info">
-  <tal:title content="structure table.title" />
-  <table tal:condition="lines"
-	 tal:attributes="id table.css_id; class table.css_class">
+<div class="table-info" i18n:domain="dolmen.forms.table">
+  <table tal:attributes="id table.css_id; class table.css_class"
+         tal:define="columns len(view.tableFields)">
     <thead>
       <tr>
-	<th tal:repeat="field fields" tal:content="field.title" />
+        <th tal:repeat="field table_fields" tal:content="field.title" />
       </tr>
     </thead>
     <tbody>
       <tr tal:repeat="line lines">
-	<td tal:repeat="widget line"
-	    tal:content="structure widget.render()" />
+        <td tal:repeat="widget line">
+          <span tal:replace="structure widget.render()" />
+        </td>
+      </tr>
+      <tr class="odd" tal:condition="not lines">
+        <td colspan="#"
+	    i18n:translate=""
+            tal:attributes="colspan columns"
+            tal:content="view.emptyDescription">
+          There are no items.
+        </td>
       </tr>
     </tbody>
   </table>

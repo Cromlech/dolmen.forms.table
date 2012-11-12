@@ -1,13 +1,18 @@
 <form action="." 
       method="post"
       enctype="multipart/form-data"
-      tal:attributes="action view.action_url; id view.htmlId()">
+      i18n:domain="dolmen.forms.table"
+      tal:attributes="action view.action_url;
+                      id view.htmlId();
+                      method view.formMethod;
+                      enctype view.enctype">
 
-  <h1 tal:condition="view.label"
-      tal:content="view.label">Label</h1>
+  <tal:title
+      tal:replace="structure view.title"/>
 
   <p tal:condition="view.description"
-     tal:content="view.description">Description</p>
+     tal:content="view.description"
+     class="description">Description</p>
 
   <p class="form-status"
      tal:condition="view.status"
@@ -16,23 +21,87 @@
   <div class="form-error"
        tal:condition="view.errors">
     <ul tal:condition="view.formErrors"
-	tal:repeat="error view.formErrors">
-      <li> <span tal:replace="error.title" /> </li>
+        tal:repeat="error view.formErrors">
+      <li><span tal:replace="error.title" /></li>
     </ul>
   </div>
 
-  <table tal:condition="lines"
-	 tal:attributes="id table.css_id; class table.css_class">
+  <table tal:attributes="id table.css_id; class table.css_class"
+         tal:define="columns len(view.tableFields) + 1">
     <thead>
       <tr>
-	<th tal:repeat="field fields" tal:content="field.title" />
+        <th/>
+        <th tal:repeat="field table_fields" tal:content="field.title"
+            tal:attributes="class 'field_%s' % field.identifier"/>
       </tr>
     </thead>
     <tbody>
       <tr tal:repeat="line lines">
-	<td tal:repeat="widget line"
-	    tal:content="structure widget.render()" />
+        <td tal:repeat="widget line"
+            tal:attributes="class 'field_%s' % widget.component.identifier">
+          <div tal:define="error widget.error"
+               tal:omit-tag="not:error"
+               class="error-field">
+            <span class="field-error"
+                  tal:condition="error"
+                  tal:content="error.title">
+                Error
+              </span>
+              <br />
+            <span tal:replace="structure widget.render()" />
+          </div>
+        </td>
+      </tr>
+      <tr class="odd" tal:condition="not lines">
+        <td colspan="#"
+	    i18n:translate=""
+            tal:attributes="colspan columns"
+            tal:content="view.emptyDescription">
+          There are no items.
+        </td>
       </tr>
     </tbody>
+    <tfoot>
+      <tr tal:condition="view.actionWidgets"
+          class="footer-form">
+        <td colspan="#"
+            tal:attributes="colspan columns">
+
+          <div class="fields"
+               tal:condition="fields">
+            <div class="field" tal:repeat="widget fields">
+              <label class="field-label" for="#"
+                     tal:attributes="for widget.htmlId()"
+                     tal:content="widget.title"
+                     tal:condition="widget.visible">
+                Label
+              </label>
+              <span class="field-required"
+                    i18n:translate=""
+                    tal:condition="widget.required and widget.visible"
+                    >(required)</span>
+              <br />
+              <tal:description tal:condition="widget.description">
+                <span class="field-description"
+                      tal:content="widget.description">
+                </span><br />
+              </tal:description>
+              <tal:error tal:define="error widget.error"
+                         tal:condition="error">
+                <span class="field-error" tal:content="error.title" />
+                <br />
+              </tal:error>
+              <tal:widget tal:content="structure widget.render()" />
+            </div>
+          </div>
+          <div class="actions"
+               tal:condition="view.actionWidgets">
+            <div class="action" tal:repeat="widget view.actionWidgets">
+              <tal:widget tal:content="structure widget.render()" />
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tfoot>
   </table>
 </form>
