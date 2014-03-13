@@ -1,2 +1,2 @@
-recursive-include src *.py *.zcml *.pt *.txt
+recursive-include src *.py *.zcml *.pt *.txt *.po
 recursive-include docs *.txt
